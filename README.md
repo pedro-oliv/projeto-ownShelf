@@ -187,7 +187,6 @@ services:
 - Garantir posse real dos livros digitais
 - Oferecer leitura online e download
 - Construir uma arquitetura escalável
-- Manter simplicidade no desenvolvimento inicial
 
 ---
 
