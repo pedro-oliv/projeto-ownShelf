@@ -70,13 +70,18 @@ export const UserPopUp = () => {
                         <h2 className="font-semibold text-lg">
                             Bem-vindo, {user.name}
                         </h2>
-                        <div>
-                        <Button 
-                        texto='Dashboard'
-                        funcao={() => {router.push(`/accountmenu/${user.id}`)}}
-                        tamanho='w-full'
-                        background='preto'/>
-                        <Button
+                        <div className='flex gap-2 flex-col pt-2'>
+                            <Button
+                                texto='Biblioteca Digital'
+                                funcao={() => { router.push(`/library/${user.id}`) }}
+                                tamanho='w-full'
+                                background='preto' />
+                            <Button
+                                texto='Pedidos'
+                                funcao={() => { console.log('teste') }}
+                                tamanho='w-full'
+                                background='preto' />
+                            <Button
                                 texto={'Sair'}
                                 funcao={logout}
                                 tamanho={'w-full'}
