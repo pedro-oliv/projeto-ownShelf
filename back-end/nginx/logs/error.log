@@ -1,0 +1,5 @@
+2026/05/25 12:14:48 [error] 26668#30560: *1 CreateFile() "C:\Users\pepo\Desktop\projeto ownshelf\projeto-ownShelf\back-end\nginx/html/favicon.ico" failed (2: O sistema não pode encontrar o arquivo especificado), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2026/05/25 12:19:14 [notice] 31620#20152: signal process started
+2026/05/25 12:28:47 [notice] 8396#33184: signal process started
+2026/05/25 12:34:56 [alert] 30424#29408: worker process 31516 exited with code C0000142
+2026/05/25 12:34:56 [alert] 30424#29408: could not respawn worker
