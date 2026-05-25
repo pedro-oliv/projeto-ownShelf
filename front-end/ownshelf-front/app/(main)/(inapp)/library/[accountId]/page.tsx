@@ -1,4 +1,4 @@
-"use client"
+
 import DashBoard from '@/app/components/DashBoard/DashBoard';
 import React from 'react'
 

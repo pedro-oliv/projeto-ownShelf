@@ -5,119 +5,105 @@ import {
   useContext,
   useEffect,
   useState,
+  ReactNode,
 } from "react";
+import api from "@/app/utils/Api";
 
-interface User {
+import { useLoading } from "./LoadingContext";
+import { useAlert } from "./AlertContext";
+import { useRouter } from 'next/navigation';
+
+type User = {
   id: number;
-  name: string;
+  nome: string;
   email: string;
-  password: string;
-}
+};
 
-interface AuthContextType {
+type AuthContextType = {
   user: User | null;
-  loading: boolean;
-  login: (
-    email: string,
-    password: string
-  ) => Promise<boolean>;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
+  login: (email: string, senha: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
 
-const AuthContext =
-  createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [user, setUser] =
-    useState<User | null>(null);
-
-  const [loading, setLoading] =
-    useState(false);
-
-  async function login(
-    email: string,
-    password: string
-  ) {
-    setLoading(true);
-
-    // simulando delay backend
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1000)
-    );
-
-    // usuário fake
-    const fakeUser = {
-      id: 1,
-      name: "Pedro",
-      email: "teste@email.com",
-      password: "123456",
-    };
-
-    // validação fake
-    if (
-      email === fakeUser.email &&
-      password === fakeUser.password
-    ) {
-      setUser(fakeUser);
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify(fakeUser)
-      );
-
-      setLoading(false);
-
-      return true;
-    }
-
-    setLoading(false);
-
-    return false;
-  }
-
-  function logout() {
-    setUser(null);
-
-    localStorage.removeItem("user");
-  }
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string>('');
+  const { setLoading } = useLoading()
+  const { showAlert } = useAlert()
+  const router = useRouter()
 
   useEffect(() => {
-    const storedUser =
-      localStorage.getItem("user");
+    async function loadUser() {
+      try {
+        const me = await api.get("/auth/me", {
+          withCredentials: true,
+        });
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+        setUser(me.data.user);
+      } catch {
+        try {
+          const refresh = await api.post(
+            "/auth/refresh",
+            {},
+            { withCredentials: true }
+          );
+
+          const token = refresh.data.token;
+
+          const me = await api.get("/auth/me", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          setUser(me.data.user);
+        } catch {
+          setUser(null);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
+
+    loadUser();
   }, []);
 
+  async function login(email: string, senha: string) {
+    setLoading(true);
+    await api.post("/auth/login", { email: email, senha: senha })
+      .then((response) => {
+        setLoading(false)
+        setUser(response.data.sucesso.dados.user)
+        setToken(response.data.sucesso.token)
+        showAlert(response.data.sucesso.dados.message)
+        router.push('/home')
+      })
+      .catch((e) => {
+        setLoading(false)
+        showAlert(e.response.data.message)
+      })
+
+  }
+
+  async function logout() {
+    await api.post("/auth/logout", {}, { withCredentials: true });
+    setUser(null);
+  }
+
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        login,
-        logout,
-        isAuthenticated: !!user,
-      }}
-    >
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const context =
-    useContext(AuthContext);
+  const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth precisa estar dentro do AuthProvider"
-    );
+    throw new Error("useAuth deve ser usado dentro do AuthProvider");
   }
 
   return context;

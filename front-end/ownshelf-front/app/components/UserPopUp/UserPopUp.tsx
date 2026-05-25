@@ -50,7 +50,7 @@ export const UserPopUp = () => {
                                 background='preto' />
                             <Button
                                 texto={'Criar conta'}
-                                funcao={() => console.log('oi')}
+                                funcao={() => router.push('/register')}
                                 tamanho={'w-full'}
                                 background='preto' />
                         </div>
@@ -68,7 +68,7 @@ export const UserPopUp = () => {
                 {open && (
                     <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#131416] shadow-xl border border-[#28292c] p-4 z-50">
                         <h2 className="font-semibold text-lg">
-                            Bem-vindo, {user.name}
+                            Bem-vindo, {user.nome}
                         </h2>
                         <div className='flex gap-2 flex-col pt-2'>
                             <Button
