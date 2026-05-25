@@ -115,7 +115,7 @@ const page = () => {
 
     async function createUser() {
         setLoading(true)
-        await api.post('auth/register', { email: email, senha: senha, nome: nome })
+        await api.post('/users/auth/register', { email: email, senha: senha, nome: nome })
             .then((response) => {
                 setLoading(false)
                 console.log(response)

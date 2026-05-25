@@ -5,7 +5,7 @@ import Button from "../Button/Button";
 const livros = [
   {
     id: 1,
-    nome: "O Senhor dos Anéis",
+    nome: "Game of Thrones",
     precoFisico: 89.9,
     precoDigital: 39.9,
     imagem:
@@ -64,7 +64,7 @@ export default function GridLivros() {
         {livros.map((livro) => (
           <div
             key={livro.id}
-            className="bg-[#131416] border border-[#28292c] rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-zinc-600 transition-all duration-200 cursor-pointer"
+            className="bg-[#131416] border border-[#28292c] rounded-2xl overflow-hidden hover:scale-[1.01] hover:border-zinc-600 transition-all duration-200 cursor-pointer"
           >
             <div className="w-full h-[420px] bg-[#0d0e10] flex items-center justify-center p-4">
               <img

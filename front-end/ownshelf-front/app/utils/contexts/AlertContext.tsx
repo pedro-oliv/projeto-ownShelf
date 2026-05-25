@@ -83,7 +83,7 @@ export function AlertProvider({
             border-2
             shadow-2xl
             transition-all
-            z-50
+            z-999
             w-xl
 
             ${visible

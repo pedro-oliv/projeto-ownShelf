@@ -54,7 +54,7 @@ const Navbar = () => {
     }, [])
 
     return (
-        <div ref={navRef} className='w-full bg-[#131416] fixed border-b-1 border-[#28292c]'>
+        <div ref={navRef} className='w-full bg-[#131416] fixed border-b-1 border-[#28292c] z-99'>
             <div className='flex px-3 py-3 items-center justify-between'>
                 <div className='flex items-center gap-x-8'>
                     <div className='px-4 cursor-pointer' onClick={() => router.push('/home')}>
