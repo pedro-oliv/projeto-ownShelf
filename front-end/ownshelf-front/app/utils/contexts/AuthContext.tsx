@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       .catch((e) => {
         setLoading(false)
-        showAlert(e.response.data.message)
+        showAlert(e.response.data.message, 'error')
       })
 
   }

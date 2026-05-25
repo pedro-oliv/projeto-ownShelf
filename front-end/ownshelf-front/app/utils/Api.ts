@@ -18,10 +18,19 @@ function processQueue(error: any, token: string | null = null) {
 
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isAuthRoute =
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/refresh");
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthRoute
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -34,14 +43,20 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await api.post("/auth/refresh", {}, {
-            withCredentials: true
-        });
+        await api.post(
+          "/auth/refresh",
+          {},
+          {
+            withCredentials: true,
+          }
+        );
 
         processQueue(null);
+
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
+
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
