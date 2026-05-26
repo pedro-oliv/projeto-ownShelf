@@ -26,19 +26,12 @@ const Navbar = () => {
     const arrayConteudo = [(
         <div className='p-5 grid grid-cols-3 gap-4'>
             <div>
-                <p>teste</p>
-                <p>teste2</p>
-                <p>teste3</p>
+                {/* conteúdo 1 */}
             </div>
         </div>),
     (<div className='p-5 grid grid-cols-3 gap-4'>
         <div>
-            <p>bom dia</p>
-            <p>boa tarde</p>
-            <p>boa noite</p>
-            <p>bom dia</p>
-            <p>boa tarde</p>
-            <p>boa noite</p>
+            {/* conteúdo 2 */}
         </div>
     </div>)
     ]
