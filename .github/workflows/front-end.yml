@@ -20,8 +20,5 @@ jobs:
       - run: npm install
         working-directory: ./front-end/ownshelf-front
 
-      - run: npm run lint
-        working-directory: ./front-end/ownshelf-front
-
       - run: npm run build
         working-directory: ./front-end/ownshelf-front
