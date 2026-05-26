@@ -1,23 +1,25 @@
 # OwnShelf
 
-> Uma plataforma de compra e leitura de livros digitais e físicos onde os livros realmente pertencem ao usuário.
+Uma plataforma de compra e leitura de livros digitais e físicos onde os livros realmente pertencem ao usuário.
 
 ---
 
 # Sobre o projeto
 
-O **OwnShelf** é uma plataforma de ecommerce focada na venda de livros físicos e digitais. Diferente de muitas plataformas atuais baseadas em licenças temporárias, o objetivo do projeto é oferecer ao usuário a verdadeira posse do conteúdo adquirido.
+O OwnShelf é uma plataforma de ecommerce focada na venda de livros físicos e digitais.
+
+Diferente de muitas plataformas atuais baseadas em licenças temporárias e DRM restritivo, o objetivo do projeto é oferecer ao usuário a verdadeira posse do conteúdo adquirido.
 
 Na plataforma, o usuário poderá:
 
-- Comprar livros físicos
-- Comprar livros digitais
-- Ler livros diretamente pelo navegador
-- Baixar o PDF do livro digital adquirido
-- Gerenciar sua biblioteca pessoal
-- Acompanhar pedidos e entregas
+* Comprar livros físicos
+* Comprar livros digitais
+* Ler livros diretamente pelo navegador
+* Baixar o PDF do livro digital adquirido
+* Gerenciar sua biblioteca pessoal
+* Acompanhar pedidos e entregas
 
-O sistema foi projetado utilizando uma arquitetura baseada em microserviços, permitindo escalabilidade, separação de responsabilidades e maior flexibilidade para evolução futura da plataforma.
+O sistema foi planejado utilizando uma arquitetura moderna baseada em microserviços, permitindo escalabilidade, modularidade e separação clara de responsabilidades.
 
 ---
 
@@ -25,30 +27,45 @@ O sistema foi projetado utilizando uma arquitetura baseada em microserviços, pe
 
 ## Front-end
 
-- React
-- Next.js
-- TypeScript
-- Tailwind CSS
+* React
+* Next.js
+* TypeScript
+* Tailwind CSS
+* Axios
+* react-pdf
+* pdf.js
+
+---
 
 ## Back-end
 
-- Node.js
-- NestJS
-- Prisma ORM
-- JWT Authentication
+* Node.js
+* NestJS
+* TypeScript
+* Prisma ORM
+* JWT Authentication
+* bcrypt
+* RabbitMQ
+* dotenv
+
+---
 
 ## Banco de dados
 
-- PostgreSQL
+* PostgreSQL
+* Neon
+
+---
 
 ## Infraestrutura
 
-- Vercel (Front-end)
-- Docker (Back-end)
-- AWS S3 (armazenamento de PDFs e imagens)
-- Nginx
-- Redis
-- RabbitMQ
+* Vercel (Front-end)
+* Railway (Microserviços)
+* Docker
+* Docker Compose
+* Nginx
+* AWS S3
+* GitHub Actions
 
 ---
 
@@ -56,197 +73,220 @@ O sistema foi projetado utilizando uma arquitetura baseada em microserviços, pe
 
 O projeto utiliza arquitetura baseada em microserviços.
 
-Cada serviço possui sua própria responsabilidade dentro do sistema:
-
-- Conta Service
-- Livro Service
-- Pagamento Service
-- Entrega Service
-
-Arquitetura geral:
+Cada serviço possui responsabilidade isolada e comunicação desacoplada através de eventos utilizando RabbitMQ.
 
 ```txt
 Usuário
    ↓
 Frontend Next.js (Vercel)
    ↓
-API Gateway
+API Gateway / Nginx
    ↓
-------------------------------------------------
-|               |               |              |
-Conta Service   Livro Service   Pagamento      Entrega
-                                  Service       Service
-------------------------------------------------
-        ↓
-PostgreSQL
-        ↓
+Microserviços NestJS
+   ├── User Service
+   ├── Book Service
+   ├── Transaction Service
+   └── Delivery Service
+   ↓
+RabbitMQ
+   ↓
+PostgreSQL (Neon)
+   ↓
 AWS S3
-```
-
----
-
-# Estrutura do projeto
-
-```txt
-/apps
-├── frontend
-│
-├── api-gateway
-│
-├── conta-service
-│
-├── livro-service
-│
-├── pagamento-service
-│
-├── entrega-service
-│
-└── notification-service
-
-/packages
-├── shared
-├── types
-├── config
-└── utils
 ```
 
 ---
 
 # Serviços
 
-## Conta Service
+## User Service
 
 Responsável por:
 
-- Cadastro de usuários
-- Login
-- Autenticação JWT
-- Biblioteca pessoal
-- Histórico de compras
-- Gerenciamento de contas
+* Cadastro
+* Login
+* Autenticação JWT
+* Gerenciamento de usuários
 
 ---
 
-## Livro Service
+## Book Service
 
 Responsável por:
 
-- Catálogo de livros
-- Upload de PDFs
-- Controle de estoque
-- Busca de livros
-- Categorias
-- Leitura online
-- Gerenciamento dos arquivos digitais
+* Catálogo de livros
+* Biblioteca do usuário
+* Upload de PDFs
+* Upload de capas
+* Leitura online
+* Download de PDFs
+* Watermark personalizada
 
 ---
 
-## Pagamento Service
+## Transaction Service
 
 Responsável por:
 
-- Checkout
-- Processamento de pagamentos
-- PIX
-- Cartão de crédito
-- Confirmação de pagamento
-- Histórico de transações
+* Checkout
+* Transações
+* Pagamentos simulados
+* Histórico de compras
+* Aprovação/rejeição de pagamentos
 
 ---
 
-## Entrega Service
+## Delivery Service
 
 Responsável por:
 
-- Endereços
-- Rastreamento
-- Cálculo de frete
-- Integração com transportadoras
+* Entregas
+* Rastreamento
+* Atualização de status
+* Endereços
 
 ---
 
-# Funcionalidades planejadas
+# Estrutura do projeto
 
-## Usuário
-
-- Cadastro e login
-- Biblioteca pessoal
-- Histórico de compras
-- Download de PDFs
-- Leitura online
-- Favoritos
-
-## Livros
-
-- Catálogo
-- Busca por nome/categoria/autor
-- Avaliações
-- Estoque de livros físicos
-- Upload de PDFs
-
-## Pagamentos
-
-- PIX
-- Cartão de crédito
-- Confirmação automática
-- Histórico de transações
-
-## Entregas
-
-- Endereços
-- Rastreamento
-- Cálculo de frete
-- Integração com transportadoras
+```txt
+/
+├── front-end
+│   └── ownshelf-front
+│
+├── back-end
+│   ├── api-gateway
+│   ├── user-service
+│   ├── book-service
+│   ├── transaction-service
+│   └── delivery-service
+│
+├── .github
+│   └── workflows
+├── docker-compose
+├── LICENSE
+└── README.md
+```
 
 ---
 
-# Segurança
+# Fluxo de compra
 
-O sistema foi planejado considerando proteção dos arquivos digitais:
-
-- Autenticação JWT
-- Rotas protegidas
-- URLs temporárias para download
-- Controle de acesso aos PDFs
-- Hash de senhas com bcrypt
-- Comunicação segura entre serviços
+```txt
+Usuário compra livro
+↓
+Transaction Service cria transação
+↓
+Pagamento aprovado
+↓
+RabbitMQ publica evento
+↓
+Book Service libera acesso
+↓
+Delivery Service cria entrega
+↓
+Usuário recebe livro na biblioteca
+```
 
 ---
 
-# Armazenamento de arquivos
+# Biblioteca do usuário
 
-Os arquivos digitais não serão armazenados diretamente no banco de dados.
+A biblioteca do usuário armazenará:
+
+* Livros digitais adquiridos
+* Livros físicos adquiridos
+* Histórico de compras
+* Informações de entrega
+
+Para livros digitais:
+
+* Leitura online
+* Download permanente
+* Acesso offline
+
+Para livros físicos:
+
+* Rastreamento
+* Histórico de entrega
+
+---
+
+# PDFs e arquivos
+
+Os PDFs e imagens não serão armazenados diretamente no banco de dados.
 
 Estrutura planejada:
 
 ```txt
-Usuário → Livro Service → AWS S3 → PDF
+Usuário
+↓
+Book Service
+↓
+AWS S3
+↓
+PDF / Imagem
+```
+
+---
+
+# Segurança dos PDFs
+
+Os livros digitais utilizarão:
+
+* Signed URLs temporárias
+* Controle de acesso por compra
+* Watermark personalizada
+
+A ideia do projeto é oferecer posse real do arquivo digital sem utilizar DRM invasivo.
+
+Exemplo de watermark:
+
+```txt
+Comprado legalmente por:
+usuario@email.com
 ```
 
 ---
 
 # Comunicação entre serviços
 
-Inicialmente, os serviços se comunicarão via HTTP REST APIs.
+Os serviços se comunicarão utilizando RabbitMQ.
 
-No futuro, a plataforma poderá utilizar filas e mensageria para comunicação assíncrona:
-
-- RabbitMQ
-- Redis Queues
-
-Exemplo:
+Exemplos de eventos:
 
 ```txt
-Pagamento aprovado
-        ↓
-Pagamento Service
-        ↓
-RabbitMQ
-        ↓
-Livro Service libera PDF
-        ↓
-Conta Service atualiza biblioteca
+payment.approved
+book.purchased
+delivery.created
+pdf.unlocked
 ```
+
+---
+
+# Banco de dados
+
+Cada microserviço possui seu próprio domínio e responsabilidade.
+
+Exemplos:
+
+## User Service
+
+* users
+
+## Book Service
+
+* books
+* library
+
+## Transaction Service
+
+* transactions
+* transaction_items
+
+## Delivery Service
+
+* deliveries
 
 ---
 
@@ -254,53 +294,73 @@ Conta Service atualiza biblioteca
 
 ## Front-end
 
-O front-end será hospedado na Vercel, aproveitando a integração nativa com Next.js:
+O front-end será hospedado na Vercel.
 
-- Deploy automático via GitHub
-- HTTPS automático
-- CDN global
-- Preview deployments
+Recursos:
+
+* Deploy automático via GitHub
+* HTTPS automático
+* CDN global
+* Preview deployments
 
 ---
 
 ## Back-end
 
-Cada microserviço será containerizado utilizando Docker.
+Os microserviços serão hospedados na Railway utilizando Docker.
 
-Estrutura inicial planejada:
+Estrutura inicial:
 
-```yaml
-services:
-  api-gateway:
-  
-  conta-service:
-
-  livro-service:
-
-  pagamento-service:
-
-  entrega-service:
-
-  postgres:
-
-  redis:
-
-  rabbitmq:
+```txt
+Docker Compose
+├── api-gateway
+├── user-service
+├── book-service
+├── transaction-service
+├── delivery-service
+├── rabbitmq
+└── nginx
 ```
 
 ---
 
-# Objetivos do projeto
+## Banco de dados
 
-- Criar uma experiência moderna para compra de livros
-- Garantir posse real dos livros digitais
-- Oferecer leitura online e download
-- Construir uma arquitetura escalável
-- Separar responsabilidades utilizando microserviços
-- Facilitar evolução futura da plataforma
+O PostgreSQL será hospedado utilizando Neon.
+
+---
+
+## Arquivos
+
+PDFs e imagens serão armazenados no AWS S3.
+
+---
+
+# Testes
+
+## Front-end
+
+* Vitest
+* React Testing Library
+
+## Back-end
+
+* Jest
+
+---
+
+# CI/CD
+
+O projeto utilizará GitHub Actions para:
+
+* Build automático
+* Execução de testes
+* Lint
+* Deploy automatizado
 
 ---
 
 # Status do projeto
 
 Em desenvolvimento.
+
