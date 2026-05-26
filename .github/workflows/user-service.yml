@@ -1,0 +1,27 @@
+name: User Service CI
+
+on:
+  push:
+    paths:
+      - 'back-end/user-service/**'
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+        working-directory: ./back-end/user-service
+
+      - run: npm run test
+        working-directory: ./back-end/user-service
+
+      - run: npm run build
+        working-directory: ./back-end/user-service
