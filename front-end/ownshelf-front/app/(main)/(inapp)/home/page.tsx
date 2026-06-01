@@ -3,7 +3,7 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className='pt-5'>
+    <div className='pt-7'>
     <GridLivros />
     </div>
   )
