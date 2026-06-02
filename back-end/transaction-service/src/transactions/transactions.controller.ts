@@ -23,11 +23,6 @@ export class TransactionsController {
     return this.service.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.service.findAll();
-  }
-
   @Get('user/:userId')
   findByUser(
     @Param('userId') userId: string,

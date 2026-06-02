@@ -55,12 +55,12 @@ const Navbar = () => {
                     <div className='px-4 cursor-pointer' onClick={() => router.push('/home')}>
                         <ShelvingUnit style={{ scale: '1.1' }} />
                     </div>
-                    <div className={`flex rounded-sm relative py-1 px-2 ps-3 hover:bg-[#9d9ea5]/15 cursor-pointer transition delay-25 duration-120 ease-in select-none after:rounded-sm after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-[#f58142] after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 ${conteudoNavExpandida === 1 && navbarExpandida ? "after:scale-x-100" : "after:scale-x-0"}`}
+                    {/* <div className={`flex rounded-sm relative py-1 px-2 ps-3 hover:bg-[#9d9ea5]/15 cursor-pointer transition delay-25 duration-120 ease-in select-none after:rounded-sm after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-[#f58142] after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 ${conteudoNavExpandida === 1 && navbarExpandida ? "after:scale-x-100" : "after:scale-x-0"}`}
                         onMouseMove={() => setMoverSeta(true)}
                         onMouseOut={() => setMoverSeta(false)} onClick={() => expandirNavbar(1)}>
                         Categorias
                         <ChevronDown className={`transition-all ease-in-out duration-100 ${moverSeta ? 'pt-1' : 'pt-0'}`} />
-                    </div>
+                    </div> */}
                 </div>
                 <div className='flex ml-auto flex-wrap items-center gap-6 pe-3'>
                     <SearchBar />
@@ -69,8 +69,8 @@ const Navbar = () => {
                     
                 </div>
             </div>
-            <div className={`px-2 absolute left-0 top-full w-full overflow-hidden transition-all ease-initial duration-200 ${navbarExpandida ? "max-h-100" : "max-h-0"} bg-[#131416] border-b-1 border-[#28292c]`}> {arrayConteudo[conteudoNavExpandida - 1]}
-            </div>
+            {/* <div className={`px-2 absolute left-0 top-full w-full overflow-hidden transition-all ease-initial duration-200 ${navbarExpandida ? "max-h-100" : "max-h-0"} bg-[#131416] border-b-1 border-[#28292c]`}> {arrayConteudo[conteudoNavExpandida - 1]}
+            </div> */}
         </div>
     )
 }

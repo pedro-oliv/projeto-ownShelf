@@ -32,42 +32,4 @@ export class LibraryController {
     )
   }
 
-  @Patch(':bookId/favorite')
-  async favoriteBook(
-    @Req() req,
-    @Param('bookId') bookId: string,
-    @Body() body: UpdateFavoriteDto,
-  ) {
-    return this.libraryService.favoriteBook(
-      req.user.id,
-      bookId,
-      body.favorite,
-    )
-  }
-
-  @Patch(':bookId/status')
-  async updateStatus(
-    @Req() req,
-    @Param('bookId') bookId: string,
-    @Body() body: UpdateStatusDto,
-  ) {
-    return this.libraryService.updateStatus(
-      req.user.id,
-      bookId,
-      body.status,
-    )
-  }
-
-  @Patch(':bookId/page')
-  async updatePage(
-    @Req() req,
-    @Param('bookId') bookId: string,
-    @Body() body: UpdatePageDto,
-  ) {
-    return this.libraryService.updateLastPage(
-      req.user.id,
-      bookId,
-      body.page,
-    )
-  }
 }

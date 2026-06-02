@@ -13,35 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum LibraryAccessType {
-  DIGITAL
-  PHYSICAL
-  BOTH
-}
-
-enum ReadingStatus {
-  NOT_STARTED
-  READING
-  FINISHED
-  PAUSED
-}
-
 model Book {
   id            String   @id @default(uuid())
   title         String
   author        String
-  synopsis      String
-  categories    String[]
   publishYear   String
-  physicalStock Int
   coverUrl      String
-  pdfUrl        String?
-  totalPages    Int?
+  pdfUrl        String
 
   libraries     Library[]
 
-  physicalPrice Decimal? @db.Decimal(10, 2)
-  digitalPrice  Decimal? @db.Decimal(10, 2)
+  price  Decimal @db.Decimal(10, 2)
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -51,18 +33,12 @@ model Library {
   id             String          @id @default(uuid())
   userId         String
   bookId         String
-  transactionId  String?
-
-  favorite       Boolean         @default(false)
-
-  accessType     LibraryAccessType
-
-  readingStatus  ReadingStatus   @default(NOT_STARTED)
-
-  lastPage       Int             @default(1)
+  transactionId  String
 
   book           Book            @relation(fields: [bookId], references: [id])
 
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  
+  @@unique([userId, bookId])
 }

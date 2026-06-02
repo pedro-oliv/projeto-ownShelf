@@ -1,94 +1,118 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { ClientProxy } from '@nestjs/microservices';
 
 
 
 @Injectable()
 export class TransactionsService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+    constructor(
+        private readonly prisma: PrismaService,
 
-  async create(dto: CreateTransactionDto) {
-    const total = dto.items.reduce(
-      (acc, item) => acc + item.unitPrice,
-      0,
-    );
+        @Inject('RABBIT_SERVICE')
+        private readonly rabbitClient: ClientProxy,
+    ) { }
 
-    return this.prisma.transaction.create({
-      data: {
-        userId: dto.userId,
-        paymentType: dto.paymentType,
-        totalAmount: total,
+    async create(dto: CreateTransactionDto) {
+        const total = dto.items.reduce(
+            (acc, item) => acc + item.unitPrice,
+            0,
+        );
 
-        items: {
-          create: dto.items.map(item => ({
-            bookId: item.bookId,
-            type: item.type,
-            unitPrice: item.unitPrice,
-          })),
-        },
-      },
+        return this.prisma.transaction.create({
+            data: {
+                userId: dto.userId,
+                paymentType: dto.paymentType,
+                totalAmount: total,
 
-      include: {
-        items: true,
-      },
-    });
-  }
+                items: {
+                    create: dto.items.map(item => ({
+                        bookId: item.bookId,
+                        unitPrice: item.unitPrice,
+                    })),
+                },
+            },
 
-  async findAll() {
-    return this.prisma.transaction.findMany({
-      include: {
-        items: true,
-      },
+            include: {
+                items: true,
+            },
+        });
+    }
 
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-  }
+    async findAll() {
+        return this.prisma.transaction.findMany({
+            include: {
+                items: true,
+            },
 
-  async findByUser(userId: string) {
-    return this.prisma.transaction.findMany({
-      where: {
-        userId,
-      },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    }
 
-      include: {
-        items: true,
-      },
+    async findByUser(userId: string) {
+        return this.prisma.transaction.findMany({
+            where: {
+                userId,
+            },
 
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-  }
+            include: {
+                items: true,
+            },
 
-  async findOne(id: string) {
-    return this.prisma.transaction.findUnique({
-      where: {
-        id,
-      },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
+    }
 
-      include: {
-        items: true,
-      },
-    });
-  }
+    async findOne(id: string) {
+        return this.prisma.transaction.findUnique({
+            where: {
+                id,
+            },
 
-  async updateStatus(
-    id: string,
-    status: 'PENDING' | 'PAID' | 'CANCELLED' | 'REFUNDED',
-  ) {
-    return this.prisma.transaction.update({
-      where: {
-        id,
-      },
+            include: {
+                items: true,
+            },
+        });
+    }
 
-      data: {
-        status,
-      },
-    });
-  }
+    async updateStatus(
+        id: string,
+        status: 'PENDING' | 'PAID' | 'CANCELLED' | 'REFUNDED',
+    ) {
+        const transaction =
+            await this.prisma.transaction.update({
+                where: {
+                    id,
+                },
+
+                data: {
+                    status,
+                },
+
+                include: {
+                    items: true,
+                },
+            });
+
+        if (status === 'PAID') {
+            this.rabbitClient.emit(
+                'transaction.paid',
+                {
+                    transactionId: transaction.id,
+                    userId: transaction.userId,
+
+                    books: transaction.items.map(
+                        item => item.bookId,
+                    ),
+                },
+            );
+        }
+
+        return transaction;
+    }
 }

@@ -19,14 +19,7 @@ export class BooksController {
   ) {
     return this.booksService.searchBooks(query)
   }
-
-  @Get('category/:category')
-  async getByCategory(
-    @Param('category') category: string,
-  ) {
-    return this.booksService.getByCategory(category)
-  }
-
+  
   @Get('landing')
   async landing() {
     return this.booksService.landing()

@@ -25,30 +25,12 @@ export class BooksService {
     })
   }
 
-  async getByCategory(category: string) {
-    return this.prisma.book.findMany({
-      where: {
-        categories: {
-          has: category,
-        },
-      },
-    })
-  }
-
   async landing() {
-    const featured = await this.prisma.book.findMany({
-      take: 5,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
-
     const popular = await this.prisma.book.findMany({
-      take: 10,
+      take: 9,
     })
 
     return {
-      featured,
       popular,
     }
   }
