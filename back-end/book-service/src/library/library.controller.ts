@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common'
@@ -14,11 +15,10 @@ import { LibraryService } from './library.service'
 
 
 @Controller('library')
-@UseGuards(JwtAuthGuard)
 export class LibraryController {
   constructor(
     private readonly libraryService: LibraryService,
-  ) {}
+  ) { }
 
   @Get()
   async getUserLibrary(
@@ -27,6 +27,20 @@ export class LibraryController {
     return this.libraryService.getUserLibrary(
       req.user.id,
     )
+  }
+
+  
+  @Post('/add')
+  async addBooks(@Body() body: {
+    userId: string;
+    books: string[];
+    transactionId: string;
+  }) {
+    return this.libraryService.addBooksToLibrary(
+      body.userId,
+      body.books,
+      body.transactionId,
+    );
   }
 
 }

@@ -1,12 +1,29 @@
-
+"use client"
 import DashBoard from '@/app/components/DashBoard/DashBoard';
-import React from 'react'
+import { useAuth } from '@/app/utils/contexts/AuthContext';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 
-async function page({params,}: {params: Promise<{ accountId: string | number}>}) {
-  const idConta = (await params).accountId;
+function page() {
+
+  const { user } = useAuth();
+  const [livros, setLivros] = useState([])
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/library", {
+      withCredentials:true
+    })
+    .then((response) => {
+      setLivros(response.data)
+    })
+    .catch((e) => {
+      console.log(e)
+    })
+  }, [])
+
 
   return (
-    <div className='pt-7'><DashBoard /></div>
+    <div className='pt-7'><DashBoard livros={livros} /></div>
   )
 }
 

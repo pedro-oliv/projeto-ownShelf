@@ -63,7 +63,7 @@ const Navbar = () => {
                     </div> */}
                 </div>
                 <div className='flex ml-auto flex-wrap items-center gap-6 pe-3'>
-                    <SearchBar />
+                    {/* <SearchBar /> */}
                     <ShoppingCartPopup />
                     <UserPopUp />
                     

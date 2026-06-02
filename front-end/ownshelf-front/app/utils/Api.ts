@@ -23,8 +23,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     const isAuthRoute =
-      originalRequest.url?.includes("users/auth/login") ||
-      originalRequest.url?.includes("users/auth/refresh");
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/refresh");
 
     if (
       error.response?.status === 401 &&
@@ -44,7 +44,7 @@ api.interceptors.response.use(
 
       try {
         await api.post(
-          "users/auth/refresh",
+          "/auth/refresh",
           {},
           {
             withCredentials: true,

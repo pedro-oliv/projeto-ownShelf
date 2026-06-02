@@ -1,96 +1,149 @@
 "use client";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 import Button from "../Button/Button";
 
-const livros = [
-    {
-        id: 1,
-        nome: "Memórias Póstumas de Brás Cubas",
-        autor: "Machado de Assis",
-        imagem:
-            "https://m.media-amazon.com/images/I/91GAAzBixYL._UF1000,1000_QL80_.jpg",
+type Livro = {
+  id: string;
+  title: string;
+  author: string;
+  coverUrl: string;
+  pdfUrl: string;
+};
 
-        pdf: "/assets/memorias-postumas.pdf",
-    },
-];
+type Props = {
+  livros: Livro[];
+};
 
-export default function DashBoard() {
+export default function DashBoard({ livros }: Props) {
 
-    function baixarPDF(pdf: string) {
-        const link = document.createElement("a");
+  function lerLivro(id: string) {
+    window.location.href = `/read/${id}`;
+  }
 
-        link.href = pdf;
+  async function baixarPDFComWatermark(pdfUrl: string, user: any, nomeArquivo: string) {
+  // 1. baixa o PDF original
+  const existingPdfBytes = await fetch(pdfUrl).then(res => res.arrayBuffer());
 
-        link.download =
-            "Memorias-Postumas-de-Bras-Cubas.pdf";
+  // 2. carrega no pdf-lib
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-        document.body.appendChild(link);
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-        link.click();
+  const pages = pdfDoc.getPages();
 
-        document.body.removeChild(link);
-    }
+  // 3. adiciona watermark em todas as páginas
+  pages.forEach((page) => {
+    const { width, height } = page.getSize();
 
-    function lerLivro(pdf: string) {
-        window.open(pdf, "_blank");
-    }
+    page.drawText(`User: ${user.email}`, {
+      x: 20,
+      y: 20,
+      size: 10,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+      opacity: 0.5,
+    });
 
-    return (
-        <div className="w-full mt-3">
+    page.drawText(`ID: ${user.id}`, {
+      x: 20,
+      y: 35,
+      size: 10,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+      opacity: 0.5,
+    });
+  });
 
-            <h1 className="text-3xl font-semibold mb-8">
-                Biblioteca Digital
-            </h1>
+  // 4. gera novo PDF
+  const pdfBytes = await pdfDoc.save();
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+  // 5. cria download
+  const blob = new Blob([pdfBytes.buffer as ArrayBuffer], {
+  type: "application/pdf",
+});
+  const url = URL.createObjectURL(blob);
 
-                {livros.map((livro) => (
-                    <div
-                        key={livro.id}
-                        className="bg-[#131416] border border-[#28292c] rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-zinc-600 transition-all duration-200"
-                    >
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = nomeArquivo;
 
-                        <div className="w-full h-[420px] bg-[#0d0e10] flex items-center justify-center p-4">
-                            <img
-                                src={livro.imagem}
-                                alt={livro.nome}
-                                className="max-h-full max-w-full object-contain rounded-lg"
-                            />
-                        </div>
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 
-                        <div className="p-4 flex flex-col gap-3">
+  URL.revokeObjectURL(url);
+}
 
-                            <div>
-                                <h2 className="font-medium text-white line-clamp-2">
-                                    {livro.nome}
-                                </h2>
+  function baixarPDF(livro: any) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-                                <p className="text-sm text-zinc-400">
-                                    {livro.autor}
-                                </p>
-                            </div>
+  baixarPDFComWatermark(
+    livro.pdfUrl,
+    user,
+    `${livro.title}.pdf`
+  );
+}
 
-                            <div className="flex flex-col gap-2 mt-2">
+  const user =
+    typeof window !== "undefined"
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : null;
 
-                                <Button
-                                    background="laranja"
-                                    funcao={() => lerLivro(livro.pdf)}
-                                    texto="Ler PDF"
-                                    tamanho={"w-full"} />
+  return (
+    <div className="w-full mt-3">
+      <h1 className="text-3xl font-semibold mb-8">
+        Biblioteca Digital
+      </h1>
 
-                                <Button
-                                    background="preto"
-                                    funcao={() => baixarPDF(livro.pdf)}
-                                    texto="Baixar PDF"
-                                    tamanho={"w-full"} />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
 
-                            </div>
-
-                        </div>
-                    </div>
-                ))}
-
+        {livros.map((livro) => (
+          <div
+            key={livro.id}
+            className="bg-[#131416] border border-[#28292c] rounded-2xl overflow-hidden hover:-translate-y-1 hover:border-zinc-600 transition-all duration-200"
+          >
+            <div className="w-full h-[420px] bg-[#0d0e10] flex items-center justify-center p-4">
+              <img
+                src={livro.coverUrl}
+                alt={livro.title}
+                className="max-h-full max-w-full object-contain rounded-lg"
+              />
             </div>
-        </div>
-    );
+
+            <div className="p-4 flex flex-col gap-3">
+              <div>
+                <h2 className="font-medium text-white line-clamp-2">
+                  {livro.title}
+                </h2>
+
+                <p className="text-sm text-zinc-400">
+                  {livro.author}
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2 mt-2">
+
+                <Button
+                  background="laranja"
+                  funcao={() => lerLivro(livro.id)}
+                  texto="Ler PDF"
+                  tamanho="w-full"
+                />
+
+                <Button
+                  background="preto"
+                  funcao={() => baixarPDF(livro)}
+                  texto="Baixar PDF"
+                  tamanho="w-full"
+                />
+
+              </div>
+            </div>
+          </div>
+        ))}
+
+      </div>
+    </div>
+  );
 }

@@ -7,7 +7,7 @@ async function page({params,}: {params: Promise<{ bookId: string | number}>}) {
   const idLivro = (await params).bookId;
 
   return (
-    <div className='pt-7'><PdfReader file='/assets/memorias-postumas.pdf'/></div>
+    <div className='pt-7'><PdfReader idLivro={String(idLivro)}/></div>
   )
 }
 

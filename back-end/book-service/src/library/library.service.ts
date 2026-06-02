@@ -35,6 +35,7 @@ export class LibraryService {
       bookId,
       transactionId,
     })),
+    skipDuplicates:true
   });
 }
 

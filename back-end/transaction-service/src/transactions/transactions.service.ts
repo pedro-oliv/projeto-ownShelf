@@ -9,7 +9,6 @@ import { ClientProxy } from '@nestjs/microservices';
 export class TransactionsService {
     constructor(
         private readonly prisma: PrismaService,
-
     ) { }
 
     async create(dto: CreateTransactionDto) {
@@ -96,4 +95,55 @@ export class TransactionsService {
 
         return transaction;
     }
+
+    async unlockTransaction(transactionId: string) {
+    const transaction = await this.prisma.transaction.findUnique({
+        where: { id: transactionId },
+        include: { items: true },
+    });
+
+    if (!transaction) throw new Error('Transação não encontrada.');
+
+    if (transaction.status !== 'PENDING') {
+        throw new Error('Já processado.');
+    }
+
+    const books = transaction.items.map(i => i.bookId);
+
+    try {
+        const response = await fetch(
+            'http://localhost:3002/library/add',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: transaction.userId,
+                    books,
+                    transactionId: transaction.id,
+                }),
+            }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('BOOK SERVICE ERROR:', errorText);
+            throw new Error(errorText);
+        }
+
+        
+        await this.updateStatus(transactionId, 'PAID');
+
+        return {
+            success: true,
+        };
+
+    } catch (err) {
+        console.log('UNLOCK FAILED:');
+
+        
+        throw new Error('Falha ao liberar livros para biblioteca.');
+    }
+}
 }

@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function loadUser() {
       try {
-        const me = await api.get("/users/auth/me", {
+        const me = await api.get("/auth/me", {
           withCredentials: true,
         });
 
@@ -45,14 +45,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch {
         try {
           const refresh = await api.post(
-            "/users/auth/refresh",
+            "/auth/refresh",
             {},
             { withCredentials: true }
           );
 
           const token = refresh.data.token;
 
-          const me = await api.get("/users/auth/me", {
+          const me = await api.get("/auth/me", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -72,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(email: string, senha: string) {
     setLoading(true);
-    await api.post("/users/auth/login", { email: email, senha: senha })
+    await api.post("/auth/login", { email: email, senha: senha })
       .then((response) => {
         setLoading(false)
         setUser(response.data.sucesso.dados.user)
@@ -88,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function logout() {
-    await api.post("/users/auth/logout", {}, { withCredentials: true });
+    await api.post("/auth/logout", {}, { withCredentials: true });
     setUser(null);
     showAlert('Logout realizado com sucesso!', 'success')
   }

@@ -47,4 +47,9 @@ export class TransactionsController {
       body.status,
     );
   }
+
+  @Post(':id/unlock')
+  async unlock(@Param('id') id: string) {
+    return this.service.unlockTransaction(id);
+  }
 }

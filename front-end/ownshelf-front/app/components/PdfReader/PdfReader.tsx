@@ -1,5 +1,6 @@
 'use client';
 
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 
@@ -7,15 +8,16 @@ pdfjs.GlobalWorkerOptions.workerSrc =
   `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface PdfReaderProps {
-  file: string;
+  idLivro: string;
 }
 
 export default function PdfReader({
-  file
+  idLivro
 }: PdfReaderProps) {
 
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
+  const [pdf, setpdf] = useState("")
 
   const [pageWidth, setPageWidth] = useState(400);
 
@@ -70,6 +72,16 @@ useEffect(() => {
       window.removeEventListener('resize', updateHeight);
 }, []);
 
+useEffect(() => {
+  axios.get(`http://localhost:3002/books/${idLivro}`)
+  .then((response) => {
+    setpdf(response.data)
+  })
+  .catch((e) => {
+    console.log(e)
+  })
+}, [])
+ 
   return (
     <div className="flex flex-col items-center py-6">
 
@@ -95,7 +107,7 @@ useEffect(() => {
           }}
         />
         <Document
-          file={file}
+          file={pdf}
           onLoadSuccess={({ numPages }) => {
             setNumPages(numPages);
           }}

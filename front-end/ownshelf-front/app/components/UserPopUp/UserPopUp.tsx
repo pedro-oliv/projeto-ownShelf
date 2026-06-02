@@ -78,7 +78,7 @@ export const UserPopUp = () => {
                                 background='preto' />
                             <Button
                                 texto='Pedidos'
-                                funcao={() => { console.log('teste') }}
+                                funcao={() => { router.push(`/orders/${user.id}`)}}
                                 tamanho='w-full'
                                 background='preto' />
                             <Button
