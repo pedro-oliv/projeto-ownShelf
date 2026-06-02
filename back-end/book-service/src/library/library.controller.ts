@@ -12,9 +12,6 @@ import { JwtAuthGuard } from './jwt-auth.guard'
 
 import { LibraryService } from './library.service'
 
-import { UpdateFavoriteDto } from './dto/update-favorite.dto'
-import { UpdatePageDto } from './dto/update-page.dto'
-import { UpdateStatusDto } from './dto/update-status.dto'
 
 @Controller('library')
 @UseGuards(JwtAuthGuard)
