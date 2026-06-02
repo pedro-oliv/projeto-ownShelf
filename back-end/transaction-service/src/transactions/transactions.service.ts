@@ -10,8 +10,6 @@ export class TransactionsService {
     constructor(
         private readonly prisma: PrismaService,
 
-        @Inject('RABBIT_SERVICE')
-        private readonly rabbitClient: ClientProxy,
     ) { }
 
     async create(dto: CreateTransactionDto) {
@@ -94,24 +92,7 @@ export class TransactionsService {
                     status,
                 },
 
-                include: {
-                    items: true,
-                },
             });
-
-        if (status === 'PAID') {
-            this.rabbitClient.emit(
-                'transaction.paid',
-                {
-                    transactionId: transaction.id,
-                    userId: transaction.userId,
-
-                    books: transaction.items.map(
-                        item => item.bookId,
-                    ),
-                },
-            );
-        }
 
         return transaction;
     }
