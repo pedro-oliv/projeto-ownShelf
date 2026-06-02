@@ -33,7 +33,7 @@ export default function RootLayout({
       className={` h-full antialiased`}
     >
       
-      <body className={`${SoraFont.className} h-screen flex flex-col`}>
+      <body className={`${SoraFont.className} bg-black h-screen flex flex-col`}>
         <Providers>
         <LoadingOverlay text=""/>
         {children}

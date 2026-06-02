@@ -6,7 +6,7 @@ async function page({params,}: {params: Promise<{ accountId: string | number}>})
   const idConta = (await params).accountId;
 
   return (
-    <div><DashBoard /></div>
+    <div className='pt-7'><DashBoard /></div>
   )
 }
 

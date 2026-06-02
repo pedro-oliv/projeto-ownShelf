@@ -38,6 +38,7 @@ const livros = [
   {
     id: 5,
     nome: "Memórias Póstumas de Brás Cubas",
+    autor: "Machado de Assis",
     precoFisico: 34.9,
     precoDigital: 14.9,
     imagem:
@@ -75,35 +76,28 @@ export default function GridLivros() {
             </div>
 
             <div className="p-4 flex flex-col gap-3">
-              <h2 className="font-bold text-white line-clamp-2 min-h-[24px] max-h-[48px]">
-                {livro.nome}
-              </h2>
+              <div>
+                                <h2 className="font-medium text-white line-clamp-2">
+                                    {livro.nome}
+                                </h2>
 
-              <div className="flex flex-col gap-1 text-sm">
-                <p className="flex justify-between">
-                  <span className="text-zinc-400">
-                    Digital
-                  </span>
+                                <p className="text-sm text-zinc-400">
+                                    {livro.autor}
+                                </p>
+                            </div>
+
+              <div className="flex flex-col gap-1 text-md">
+                <p className="flex justify-end">
+                  
 
                   <span className="text-[#f58142] font-semibold">
                     R$ {livro.precoDigital.toFixed(2)}
                   </span>
                 </p>
-
-                <p className="flex justify-between">
-                  <span className="text-zinc-400">
-                    Físico
-                  </span>
-
-                  <span className="text-white font-semibold">
-                    R$ {livro.precoFisico.toFixed(2)}
-                  </span>
-                </p>
               </div>
 
-              <div className="flex gap-3">
-                <Button texto={"Comprar Digital"} funcao={undefined} tamanho={"w-full"} background={"laranja"} />
-                <Button texto={"Comprar Físico"} funcao={undefined} tamanho="w-full" background="laranja"/>
+              <div className="">
+                <Button texto={"Adicionar ao carrinho"} funcao={undefined} tamanho="w-full" background="laranja"/>
               </div>
             </div>
           </div>
