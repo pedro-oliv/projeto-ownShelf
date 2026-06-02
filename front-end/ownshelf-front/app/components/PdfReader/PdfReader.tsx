@@ -17,7 +17,7 @@ export default function PdfReader({
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
 
-  const [pageWidth, setPageWidth] = useState(800);
+  const [pageWidth, setPageWidth] = useState(400);
 
   useEffect(() => {
     const updateWidth = () => {
@@ -44,7 +44,7 @@ export default function PdfReader({
 
   }, []);
 
-  const [pageHeight, setPageHeight] = useState(800);
+  const [pageHeight, setPageHeight] = useState(1000);
 
 useEffect(() => {
       const updateHeight = () => {
@@ -55,10 +55,10 @@ useEffect(() => {
         setPageHeight(screenHeight - 32);
       }
       else if (screenHeight < 1024) {
-        setPageHeight(screenHeight * 0.8);
+        setPageHeight(screenHeight * 0.9);
       }
       else {
-        setPageHeight(Math.min(screenHeight * 0.7, 1000));
+        setPageHeight(Math.min(screenHeight * 0.8, 1000));
       }
     };
 
@@ -94,7 +94,6 @@ useEffect(() => {
             }
           }}
         />
-
         <Document
           file={file}
           onLoadSuccess={({ numPages }) => {
@@ -103,13 +102,11 @@ useEffect(() => {
         >
           <Page
             pageNumber={pageNumber}
-            width={pageWidth}
-            height={pageHeight}
+            height={800}
             renderTextLayer={false}
             renderAnnotationLayer={false}
           />
         </Document>
-
       </div>
 
       <div className="mt-4 text-sm text-zinc-400">
