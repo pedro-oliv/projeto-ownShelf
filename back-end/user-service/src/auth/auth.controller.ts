@@ -42,6 +42,13 @@ export class AuthController {
             maxAge: 1000 * 60 * 60 * 24 * 7,
         });
 
+        response.cookie('access_token', result.accessToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 1000 * 60 * 15,
+        });
+
         return {
             sucesso: result.data,
             token: result.accessToken

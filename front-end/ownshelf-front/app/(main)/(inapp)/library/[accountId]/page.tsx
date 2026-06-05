@@ -14,7 +14,8 @@ function page() {
       withCredentials:true
     })
     .then((response) => {
-      setLivros(response.data)
+      console.log(response.data)
+      setLivros(response.data.map((d:any) => d.book))
     })
     .catch((e) => {
       console.log(e)

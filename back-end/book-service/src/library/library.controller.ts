@@ -20,6 +20,7 @@ export class LibraryController {
     private readonly libraryService: LibraryService,
   ) { }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getUserLibrary(
     @Req() req,

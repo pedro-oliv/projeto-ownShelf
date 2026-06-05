@@ -2,6 +2,8 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 import Button from "../Button/Button";
+import { useAuth } from "@/app/utils/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 type Livro = {
   id: string;
@@ -17,8 +19,12 @@ type Props = {
 
 export default function DashBoard({ livros }: Props) {
 
+  const {user} = useAuth();
+
+  const router = useRouter()
+
   function lerLivro(id: string) {
-    window.location.href = `/read/${id}`;
+    router.push(`${user!.id}/read/${id}`);
   }
 
   async function baixarPDFComWatermark(pdfUrl: string, user: any, nomeArquivo: string) {
@@ -76,7 +82,6 @@ export default function DashBoard({ livros }: Props) {
 }
 
   function baixarPDF(livro: any) {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   baixarPDFComWatermark(
     livro.pdfUrl,
@@ -84,11 +89,6 @@ export default function DashBoard({ livros }: Props) {
     `${livro.title}.pdf`
   );
 }
-
-  const user =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("user") || "{}")
-      : null;
 
   return (
     <div className="w-full mt-3">

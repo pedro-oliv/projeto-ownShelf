@@ -48,8 +48,8 @@ export default function PdfReader({
 
   const [pageHeight, setPageHeight] = useState(1000);
 
-useEffect(() => {
-      const updateHeight = () => {
+  useEffect(() => {
+    const updateHeight = () => {
 
       const screenHeight = window.innerHeight;
 
@@ -70,18 +70,19 @@ useEffect(() => {
 
     return () =>
       window.removeEventListener('resize', updateHeight);
-}, []);
+  }, []);
 
-useEffect(() => {
-  axios.get(`http://localhost:3002/books/${idLivro}`)
-  .then((response) => {
-    setpdf(response.data)
-  })
-  .catch((e) => {
-    console.log(e)
-  })
-}, [])
- 
+  useEffect(() => {
+    axios.get(`http://localhost:3002/books/${idLivro}`)
+      .then((response) => {
+        console.log(response.data)
+        setpdf(response.data.pdfUrl)
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }, [])
+
   return (
     <div className="flex flex-col items-center py-6">
 
@@ -118,6 +119,24 @@ useEffect(() => {
             renderTextLayer={false}
             renderAnnotationLayer={false}
           />
+
+          <div style={{ display: 'none' }}>
+            {[-3, -2, -1, 1, 2, 3].map(offset => {
+              const page = pageNumber + offset;
+
+              if (page < 1 || page > numPages) return null;
+
+              return (
+                <Page
+                  key={page}
+                  pageNumber={page}
+                  height={800}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                />
+              );
+            })}
+          </div>
         </Document>
       </div>
 
