@@ -46,9 +46,9 @@ describe('OwnShelf', () => {
     describe('Teste Unitário', () => {
         it('deve calcular corretamente o valor total dos livros da compra', () => {
             const items = [
-                { unitPrice: 15 },
-                { unitPrice: 25 },
-                { unitPrice: 35 },
+                { unitPrice: 15.8 },
+                { unitPrice: 21.5 },
+                { unitPrice: 38.3 },
             ];
 
             const total = items.reduce(
@@ -56,7 +56,7 @@ describe('OwnShelf', () => {
                 0,
             );
 
-            expect(total).toBe(75);
+            expect(total).toBe(75.6);
         });
     });
 
