@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Button from "@/app/components/Button/Button";
 import axios from 'axios';
 import { useAuth } from '@/app/utils/contexts/AuthContext';
+import { useLoading } from '@/app/utils/contexts/LoadingContext';
 
 type Transaction = {
   id: string;
@@ -28,10 +29,12 @@ function page() {
   }
 
   useEffect(() => {
-    loadOrders();
-  }, []);
+  if (!user?.id) return;
 
-  const [loading, setLoading] = useState(false);
+  loadOrders();
+  }, [user?.id]);
+
+  const {setLoading} = useLoading()
 
   async function handleUnlock(transactionId: string) {
     try {
@@ -84,7 +87,7 @@ function page() {
           <div className="mt-4">
             {t.items.map((item) => (
               <div key={item.id} className="text-sm">
-                Livro ID: {item.bookId} — R$ {item.unitPrice}
+                Livro ID: {item.bookId} - R$ {Number(item.unitPrice).toFixed(2).replace('.', ',')}
               </div>
             ))}
           </div>

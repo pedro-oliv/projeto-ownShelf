@@ -1,4 +1,3 @@
-// app/checkout/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -58,7 +57,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="p-10">
+    <div className="flex w-full justify-center">
+    <div className="p-10 w-5xl">
       <h1 className="text-2xl font-bold mb-6">
         Checkout
       </h1>
@@ -72,12 +72,17 @@ export default function CheckoutPage() {
 
       <hr className="my-4" />
 
+
+      <div className="flex justify-end">
       <h2 className="text-xl font-semibold">
         Total: R$ {total.toFixed(2).replace('.', ',')}
       </h2>
-      <div className="pt-2">
+      </div>
+      <div className="pt-4 flex justify-between">
+        <Button texto={"Voltar"} funcao={() => router.push('/home')} tamanho={"w-xs"} background={"preto"} />
         <Button texto={"Finalizar compra"} funcao={() => handleCheckout()} tamanho={"w-xs"} background={"preto"} />
       </div>
+    </div>
     </div>
   );
 }

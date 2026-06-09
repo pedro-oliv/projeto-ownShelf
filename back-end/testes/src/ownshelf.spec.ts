@@ -1,4 +1,5 @@
 import axios from 'axios';
+import * as bcrypt from 'bcrypt';
 
 const AUTH_URL = 'http://localhost:3001';
 const BOOK_URL = 'http://localhost:3002';
@@ -9,54 +10,16 @@ describe('OwnShelf', () => {
     let token: string | undefined;
     let userId: string | undefined;
     let transactionId: string | undefined;
-    //  let email: string;
-    // email = `teste${Date.now()}@email.com`;
-
-    /*     beforeAll(async () => {
-            const email =
-                `teste${Date.now()}@email.com`;
-    
-            const response = await axios.post(
-                `${AUTH_URL}/auth/register`,
-                {
-                    nome: 'Usuário Teste',
-                    email,
-                    senha: 'Teste@123'
-                }
-            );
-    
-            token = response.data.sucesso.dados.token;
-    
-            const me = await axios.get(
-                `${AUTH_URL}/auth/me`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-    
-            userId = me.data.user.id;
-        }); */
 
     /*
      * TESTE 1
      * UNITÁRIO
      */
     describe('Teste Unitário', () => {
-        it('deve calcular corretamente o valor total dos livros da compra', () => {
-            const items = [
-                { unitPrice: 15.8 },
-                { unitPrice: 21.5 },
-                { unitPrice: 38.3 },
-            ];
+        it('deve gerar hash diferente da senha original', async () => {
+            const hash = await bcrypt.hash('senha123!', 10)
 
-            const total = items.reduce(
-                (sum, item) => sum + item.unitPrice,
-                0,
-            );
-
-            expect(total).toBe(75.6);
+            expect(hash).not.toBe('senha123!');
         });
     });
 
